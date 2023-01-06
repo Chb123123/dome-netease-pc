@@ -1,91 +1,85 @@
 <template>
-  <el-carousel :interval="4000" type="card" height="300px">
-    <el-carousel-item v-for="item in imageList" :key="item.id">
-      <img :src="item.url" alt="" style="width: 100%;height: 100%">
-      <!-- <img src="@/assets/003519-1615480519ce1a.jpg" alt=""> -->
-    </el-carousel-item>
-  </el-carousel>
-  <div></div>
-  <BorderBox1 class="container"> Content </BorderBox1>
+	<div class="container-main">
+		<div class="pageMain">
+			<el-carousel :interval="4000" type="card" height="300px">
+				<el-carousel-item v-for="item in imageList" :key="item.bannerId">
+					<img :src="item.pic" alt="" style="width: 100%; height: 100%" />
+				</el-carousel-item>
+			</el-carousel>
+			<el-skeleton :rows="5" animated />
+		</div>
+	</div>
 </template>
 
-<script>
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-// import { BorderBox1 } from '@dataview/datav-vue3';
-export default {
-  setup() {
-    // 首页轮播图
-    let imageList = reactive([
-      { id: 1, url: '@/assets/003519-1615480519ce1a.jpg' },
-      { id: 2, url: '@/assets/100616-15226347765c8a.jpg' },
-      { id: 3, url: '@/assets/175106-15281058660540.jpg' },
-      { id: 4, url: '@/assets/232420-1657639460cd51.jpg' }
-    ])
-    return {
-      imageList
+<script setup>
+import { ref, reactive, watch } from "vue";
+import { ElMessage } from "element-plus";
+import http from "@/util/require";
+
+// 首页轮播图列表
+let imageList = ref([]);
+let iconList = ref([])
+// 获取首页数据
+const getHomeDate = function () {
+	http({
+		url: "/homepage/block/page",
+	})
+		.then((res) => {
+			if (res.data.code === 200) {
+				// 首页轮播图
+				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+			} else {
+				open("获取数据失败！！");
+			}
+		})
+		.catch((err) => {
+			open(err);
+		});
+};
+// 获取首页图标
+function getHomeIcons () {
+  http({
+    url: '/homepage/dragon/ball'
+  }).then(res => {
+    if(res.data.code === 200) {
+      iconList = res.data.data
+    } else {
+      open('获取图标数据失败!!')
     }
-  },
-  created() {
-    // this.getHomeInfo()
-    // this.getUserList()
-  },
-  methods: {
-    // 获取首页信息
-    getHomeInfo() {
-      this.$http({
-        url: '/homepage/block/page'
-      }).then(res => {
-        if(res.data.code === 200) {
-          // console.log(res.data.data.blocks)
-        } else {
-          this.open('数据请求失败')
-        }
-      })
-    },
-    getMuis() {
-      this.$http({
-        method: 'get',
-        url: 'lyric?id=33894312'
-      }).then(res => {
-        // console.log(res)
-      })
-    },
-    open(title) {
-      ElMessage.error(title)
-    },
-    getUserList() {
-      let userId = JSON.parse(localStorage.getItem('userInfo'))
-      console.log(userId)
-      this.$http({
-        url: '/likelist',
-        params: {
-          uid: userId.id
-        }
-      }).then(res => {
-        console.log(res)
-      })
-    }
-  }
+  }).catch(err => {
+    open(err)
+  })
 }
+
+// 消息弹窗
+const open = (title) => {
+	ElMessage(title ? title : "请求数据失败！！");
+};
+
+// 生命周期
+create: {
+	getHomeDate();
+  getHomeIcons()
+}
+// onMounted: {
+//   console.log(13)
+// }
+// 数据监听
+// watch(num, (newVal, oldVal) => {
+// 	console.log(newVal, oldVal);
+// });
 </script>
 
 <style lang="scss" scoped>
 .el-carousel__item img {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
-
-// .el-carousel__item:nth-child(2n) {
-//   background-color: #99a9bf;
-// }
-
-// .el-carousel__item:nth-child(2n + 1) {
-//   background-color: #d3dce6;
-// }
-
-.container {
-  width: 500px;
-  height: 200px;
+.pageMain {
+	height: calc(100vh - 20px);
+	width: 100%;
+	border: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
 }
 </style>
