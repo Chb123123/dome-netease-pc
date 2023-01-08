@@ -7,12 +7,14 @@ const router = createRouter({
     { path: '/', redirect: '/home', component: () => import('@/views/home/Home.vue') },
     { 
       path: '/home', 
+      redirect: '/home/homePage',
       component: () => import('@/views/home/Home.vue'), 
-      // children: [
-      //   {
-      //     path: ''
-      //   }
-      // ]
+      children: [
+        {
+          path: 'homePage',
+          component: () => import('@/views/home/mainView/index.vue')
+        }
+      ]
     },
     { path: '/login', component: () => import('@/views/login') }
   ]

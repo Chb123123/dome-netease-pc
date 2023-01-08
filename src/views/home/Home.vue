@@ -1,85 +1,64 @@
 <template>
-	<div class="container-main">
-		<div class="pageMain">
-			<el-carousel :interval="4000" type="card" height="300px">
-				<el-carousel-item v-for="item in imageList" :key="item.bannerId">
-					<img :src="item.pic" alt="" style="width: 100%; height: 100%" />
-				</el-carousel-item>
-			</el-carousel>
-			<el-skeleton :rows="5" animated />
+	<div class="container-main main">
+		<div class="tableBox">
+			<div class="tableItem" v-for="item in tableList" :key="item.id">
+				<img :src="item.iconUrl" alt="">
+				{{ item.name }}
+			</div>
 		</div>
+		<router-view></router-view>
 	</div>
 </template>
 
 <script setup>
-import { ref, reactive, watch } from "vue";
-import { ElMessage } from "element-plus";
-import http from "@/util/require";
+import { ref, reactive } from 'vue'
+import axios from '@/util/require'
+import { ElMessage } from 'element-plus'
+	let tableList = ref([])
 
-// 首页轮播图列表
-let imageList = ref([]);
-let iconList = ref([])
-// 获取首页数据
-const getHomeDate = function () {
-	http({
-		url: "/homepage/block/page",
-	})
-		.then((res) => {
-			if (res.data.code === 200) {
-				// 首页轮播图
-				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+	function open(title) {
+		ElMessage(title ? title:'获取数据失败！！')
+	}
+	function getTableList() {
+		axios({
+			url: 'homepage/dragon/ball'
+		}).then(res => {
+			// console.log(res.data.data)
+			if(res.data.code === 200) {
+				tableList.value = res.data.data
+				console.log(tableList)
 			} else {
-				open("获取数据失败！！");
+				open()
+				// console.log(123)
 			}
 		})
-		.catch((err) => {
-			open(err);
-		});
-};
-// 获取首页图标
-function getHomeIcons () {
-  http({
-    url: '/homepage/dragon/ball'
-  }).then(res => {
-    if(res.data.code === 200) {
-      iconList = res.data.data
-    } else {
-      open('获取图标数据失败!!')
-    }
-  }).catch(err => {
-    open(err)
-  })
-}
-
-// 消息弹窗
-const open = (title) => {
-	ElMessage(title ? title : "请求数据失败！！");
-};
-
-// 生命周期
-create: {
-	getHomeDate();
-  getHomeIcons()
-}
-// onMounted: {
-//   console.log(13)
-// }
-// 数据监听
-// watch(num, (newVal, oldVal) => {
-// 	console.log(newVal, oldVal);
-// });
+	}
+	create: {
+		getTableList()
+	}
 </script>
 
 <style lang="scss" scoped>
-.el-carousel__item img {
-	width: 100%;
-	height: 100%;
-}
-.pageMain {
-	height: calc(100vh - 20px);
-	width: 100%;
-	border: 1px solid #ccc;
-  padding: 20px;
-  box-sizing: border-box;
-}
+	.main {
+		display: flex;
+	}
+	.tableBox {
+		min-width: 300px;
+		border: 1px solid #ccc;
+		// background-color: #666;
+	}
+	.tableItem {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 60px;
+		width: 100%;
+		text-align: center;
+		line-height: 60px;
+		border: 1px solid #ccc;
+		> img {
+			width: 30px;
+			height: 30px;
+		}
+	}
 </style>
