@@ -1,65 +1,162 @@
 <template>
 	<div class="container-main">
 		<div class="pageMain">
-			<el-carousel :interval="4000" type="card" height="300px">
-				<el-carousel-item v-for="item in imageList" :key="item.bannerId">
-					<img :src="item.pic" alt="" style="width: 100%; height: 100%" />
-				</el-carousel-item>
-			</el-carousel>
-			<el-skeleton :rows="5" animated />
+			<el-space direction="vertical" alignment="flex-start">
+				<div></div>
+				<el-skeleton :loading="loading" animated :throttle="1000">
+					<template #template>
+						<el-skeleton-item
+							variant="image"
+							style="width: 100%; height: 300px"
+						/>
+						<div style="padding: 14px">
+							<el-skeleton-item variant="h3" style="width: 30%; height: 20px" :throttle="1000"/>
+							<div
+								style="
+									display: flex;
+									align-items: center;
+									justify-items: space-between;
+									margin-top: 16px;
+									height: 16px;
+								"
+							>
+								<el-skeleton-item variant="h3" style="margin-right: 16px" :throttle="1000"/>
+							</div>
+							<div
+								style="
+									display: flex;
+									align-items: center;
+									justify-items: space-between;
+									margin-top: 16px;
+									height: 16px;
+								"
+							>
+								<el-skeleton-item variant="h3" style="margin-right: 16px" :throttle="1000"/>
+							</div>
+							<div
+								style="
+									display: flex;
+									align-items: center;
+									justify-items: space-between;
+									margin-top: 16px;
+									height: 16px;
+								"
+							>
+								<el-skeleton-item variant="h3" style="margin-right: 16px" :throttle="1000"/>
+							</div>
+						</div>
+					</template>
+					<template #default>
+						<div style="width: calc(100vw - 350px)">
+							<el-carousel
+								:interval="4000"
+								type="card"
+								height="300px"
+								style="width: calc(100vw- 350px)"
+							>
+								<el-carousel-item
+									v-for="item in imageList"
+									:key="item.bannerId"
+								>
+									<img
+										:src="item.pic"
+										alt=""
+										style="width: 100%; height: 100%"
+									/>
+								</el-carousel-item>
+							</el-carousel>
+							<!-- 首页轮播图结束 -->
+							
+							<!-- 推荐歌单 -->
+							<div class="functionModule">
+								<h3 style="border-bottom: 1px solid #ccc; padding: 0 0 20px 0;">推荐歌单</h3>
+								<div class="moduleBox">
+									<div class="functionItem" v-for="item in recommendPlayList" :key="item.creativeId" @click="gotoPlayList(item.creativeId)">
+											<img
+												:src="item.uiElement.image.imageUrl"
+												alt=""
+											/>
+										<div class="lineHeightOverFrom">{{ item.uiElement.mainTitle.title }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</template>
+				</el-skeleton>
+			</el-space>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import http from "@/util/require";
+import axios from "@/util/require";
 
 // 首页轮播图列表
 let imageList = ref([]);
-let iconList = ref([])
+// 推荐歌单
+let recommendPlayList = ref([]);
+// 是否显示加载动画
+let loading = ref(true);
 // 获取首页数据
 const getHomeDate = function () {
+	loading.value = true;
 	http({
 		url: "/homepage/block/page",
 	})
 		.then((res) => {
 			if (res.data.code === 200) {
+				// console.log(res.data.data.blocks[1]);
 				// 首页轮播图
-				imageList.value = res.data.data.blocks[0].extInfo.banners;	
+				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+				// 推荐歌单
+				recommendPlayList.value = res.data.data.blocks[1].creatives
+				console.log(recommendPlayList.value[0].uiElement.image)
 			} else {
 				open("获取数据失败！！");
 			}
+			loading.value = false;
 		})
 		.catch((err) => {
 			open(err);
+			loading.value = false;
 		});
 };
-// 获取首页图标
-function getHomeIcons () {
-  http({
-    url: '/homepage/dragon/ball'
-  }).then(res => {
-    if(res.data.code === 200) {
-      iconList = res.data.data
-    } else {
-      open('获取图标数据失败!!')
-    }
-  }).catch(err => {
-    open(err)
-  })
-}
+// 获取每日歌单列表
+// function getPlayLiat() {
+// 	http({
+// 		url: "/personalized",
+// 	})
+// 		.then((res) => {
+// 			if (res.data.code === 200) {
+// 				everyPlayList.value = res.data.result;
+// 				console.log(everyPlayList);
+// 			} else {
+// 				open("获取推荐歌单失败!!");
+// 			}
+// 		})
+// }
 
 // 消息弹窗
 const open = (title) => {
 	ElMessage(title ? title : "请求数据失败！！");
 };
 
+function gotoPlayList(id) {
+	console.log(id)
+	axios({
+		url: '/playlist/track/all?id=3138266383&limit=10&offset=1'
+	}).then(res => {
+		console.log(res)
+	})
+}
 // 生命周期
 create: {
 	getHomeDate();
-  getHomeIcons()
+	gotoPlayList()
+	// getPlayLiat();
 }
 // onMounted: {
 //   console.log(13)
@@ -75,11 +172,57 @@ create: {
 	width: 100%;
 	height: 100%;
 }
+.el-skeleton {
+	width: calc(100vw - 350px);
+}
+.el-space {
+	width: 100%;
+}
 .pageMain {
 	height: calc(100vh - 20px);
 	width: 100%;
 	// border: 1px solid #ccc;
-  padding: 20px;
-  box-sizing: border-box;
+	padding: 20px;
+	box-sizing: border-box;
+}
+// 功能模块
+.functionModule {
+	// border: 1px solid #ccc;
+	align-items: center;
+	padding-bottom: 20px;
+	.moduleBox {
+		display: flex;
+		justify-content: space-between;
+		.functionItem {
+			flex: 1;
+			
+			// border-radius: 20px;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			// min-width: 100px;
+			height: 210px;
+			// border: 1px solid #ccc;
+			// margin-right: 20px;
+			color: #6a6a6a;
+			font-weight: 600;
+			> img {
+				width: 100%;
+				height: 160px;
+				margin-bottom: 10px;
+			}
+			.lineHeightOverFrom {
+				height: 40px;
+				padding: 0 10px;
+				display: -webkit-box;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+		}
+	}
 }
 </style>

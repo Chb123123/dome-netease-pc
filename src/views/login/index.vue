@@ -7,68 +7,62 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { ElMessage } from "element-plus";
-import { ref } from "vue";
-export default {
-	setup() {
-		let input = ref("");
-		return {
-			input,
-		};
-	},
-	methods: {
-		getLogin() {
-			this.$http({
-				method: "POST",
-				url: "/captcha/verify",
-				data: {
-					phone: 18296638530,
-					captcha: 4663,
-				},
-			}).then((res) => {
-				console.log(res.data);
-				if (res.data.code === 200) {
-					this.$router.push("/");
-				}
-			});
+import { ref, getCurrentInstance } from "vue";
+import axios from "@/util/require";
+let input = ref("");
+const instance = getCurrentInstance();
+function getLogin() {
+	axios({
+		method: "POST",
+		url: "/captcha/verify",
+		data: {
+			phone: 18296638530,
+			captcha: 4752,
 		},
-		getUserInfo() {
-			this.$http({
-				url: "login/status",
-			}).then((res) => {
-				if (res.data.data.code === 200) {
-					console.log(res.data.data.account);
-					localStorage.setItem(
-						"userInfo",
-						JSON.stringify(res.data.data.account)
-					);
-				} else {
-					this.open2();
-					localStorage.removeItem("userInfo");
-				}
-			});
+	}).then((res) => {
+		console.log(res.data);
+		if (res.data.code === 200) {
+			if (instance !== null) {
+				const _this = instance.appContext.config.globalProperties;
+				_this.$router.push("/");
+			}
+		}
+	});
+}
+function getUserInfo() {
+	axios({
+		url: "login/status",
+	}).then((res) => {
+		if (res.data.data.code === 200) {
+			console.log(res.data.data.account);
+			localStorage.setItem("userInfo", JSON.stringify(res.data.data.account));
+		} else {
+			open2();
+			localStorage.removeItem("userInfo");
+		}
+	});
+}
+function open2() {
+	ElMessage.error("Oops, this is a error message.");
+}
+// 获取验证码
+function getVerificationCode() {
+	console.log(input.value);
+	axios({
+		url: "/captcha/sent",
+		params: {
+			phone: input.value,
 		},
-		open2() {
-			ElMessage.error("Oops, this is a error message.");
-		},
-		// 获取验证码
-		getVerificationCode() {
-			console.log(this.input);
-			this.$http({
-				url: "/captcha/sent",
-				params: {
-					phone: this.input,
-				},
-			}).then((res) => {
-				console.log(res);
-			});
-		},
-	},
-	created() {
-		this.getUserInfo();
-	},
-};
+	}).then((res) => {
+		console.log(res);
+	});
+}
+created: {
+	// console.log(instance.appContext.config.globalProperties.$router.push('/'))
+	getUserInfo();
+}
 </script>
 
 <style></style>

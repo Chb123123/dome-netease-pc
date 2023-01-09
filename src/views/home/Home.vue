@@ -1,10 +1,10 @@
 <template>
 	<div class="container-main main">
 		<div class="tableBox">
-			<div class="tableItem" v-for="item in tableList" :key="item.id">
-				<img :src="item.iconUrl" alt="">
-				{{ item.name }}
-			</div>
+			<router-link :class="checkItemId === item.id? 'tableItem checkTable':'tableItem'" v-for="item in tableList" :key="item.id" @click="checkItem(item.id)" :to="item.linkTo">
+				<!-- <img :src="item.iconUrl" alt=""> -->
+				{{ item.text }}
+			</router-link>
 		</div>
 		<router-view></router-view>
 	</div>
@@ -14,8 +14,12 @@
 import { ref, reactive } from 'vue'
 import axios from '@/util/require'
 import { ElMessage } from 'element-plus'
-	let tableList = ref([])
-
+	// let tableList = ref([])
+	let tableList = ref([
+		{ id: 0, text: '首页', icon: '', linkTo: '/home/homePage'},
+		{ id: 1, text: '发现', icon: '', linkTo: '/home/discover' },
+	])
+	let checkItemId = ref(0)
 	function open(title) {
 		ElMessage(title ? title:'获取数据失败！！')
 	}
@@ -26,15 +30,18 @@ import { ElMessage } from 'element-plus'
 			// console.log(res.data.data)
 			if(res.data.code === 200) {
 				tableList.value = res.data.data
-				console.log(tableList)
 			} else {
 				open()
 				// console.log(123)
 			}
 		})
 	}
+	function checkItem(id) {
+		checkItemId.value = id
+		console.log(checkItemId)
+	}
 	create: {
-		getTableList()
+		// getTableList()
 	}
 </script>
 
@@ -43,9 +50,11 @@ import { ElMessage } from 'element-plus'
 		display: flex;
 	}
 	.tableBox {
+		display: flex;
+		flex-direction: column;
 		min-width: 300px;
-		border: 1px solid #ccc;
-		// background-color: #666;
+		background-color: #F5F5F7;
+		height: calc(100vh - 20px);
 	}
 	.tableItem {
 		display: flex;
@@ -55,10 +64,20 @@ import { ElMessage } from 'element-plus'
 		width: 100%;
 		text-align: center;
 		line-height: 60px;
-		border: 1px solid #ccc;
+		transition: all 0.5s;
+		// border: 1px solid #ccc;
+		color: #676767;
+		cursor: pointer;
 		> img {
 			width: 30px;
 			height: 30px;
 		}
+	}
+	// 选中的table项
+	.checkTable {
+		background-color: #E6E7EB;
+		color: #292A2B;
+		font-weight: 800;
+		transition: all 0.5s;
 	}
 </style>
