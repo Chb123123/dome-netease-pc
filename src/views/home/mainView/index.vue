@@ -69,7 +69,13 @@
 							
 							<!-- 推荐歌单 -->
 							<div class="functionModule">
-								<h3 style="border-bottom: 1px solid #ccc; padding: 0 0 20px 0;">推荐歌单</h3>
+								<h3 class="titleStyle">
+									推荐歌单
+									<router-link class="moreBtn" to="">
+										更多
+										<el-icon><ArrowRight /></el-icon>
+									</router-link>
+								</h3>
 								<div class="moduleBox">
 									<div class="functionItem" v-for="item in recommendPlayList" :key="item.creativeId" @click="gotoPlayList(item.creativeId)">
 											<img
@@ -110,7 +116,7 @@ const getHomeDate = function () {
 			if (res.data.code === 200) {
 				// console.log(res.data.data.blocks[1]);
 				// 首页轮播图
-				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+				imageList.value = res.data.data.blocks[0].extInfo.banners;
 				// 推荐歌单
 				recommendPlayList.value = res.data.data.blocks[1].creatives
 				console.log(recommendPlayList.value[0].uiElement.image)
@@ -147,15 +153,19 @@ const open = (title) => {
 function gotoPlayList(id) {
 	console.log(id)
 	axios({
-		url: '/playlist/track/all?id=3138266383&limit=10&offset=1'
+		url: '/playlist/track/all',
+		params: {
+			id: id,
+			limit: 10,
+			offset: 1
+		}
 	}).then(res => {
-		console.log(res)
+		console.log(res.data.songs)
 	})
 }
 // 生命周期
 create: {
 	getHomeDate();
-	gotoPlayList()
 	// getPlayLiat();
 }
 // onMounted: {
@@ -190,27 +200,43 @@ create: {
 	// border: 1px solid #ccc;
 	align-items: center;
 	padding-bottom: 20px;
+	.titleStyle {
+		position: relative;
+		color: #3D403F;
+		font-size: 24px;
+		font-weight: 800;
+		margin-bottom: 20px;
+		.moreBtn {
+			position: absolute;
+			top: 50%;
+			right: 20px;
+			transform: translateY(-50%);
+			font-size: 16px;
+			color: #969696;
+		}
+	}
 	.moduleBox {
 		display: flex;
 		justify-content: space-between;
 		.functionItem {
+			cursor: pointer;
 			flex: 1;
-			
+			margin-left: 20px;
 			// border-radius: 20px;
 			overflow: hidden;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
-			align-items: center;
+			// justify-content: center;
+			// align-items: center;
 			// min-width: 100px;
-			height: 210px;
+			height: 260px;
 			// border: 1px solid #ccc;
 			// margin-right: 20px;
 			color: #6a6a6a;
 			font-weight: 600;
 			> img {
 				width: 100%;
-				height: 160px;
+				height: 200px;
 				margin-bottom: 10px;
 			}
 			.lineHeightOverFrom {
@@ -218,10 +244,15 @@ create: {
 				padding: 0 10px;
 				display: -webkit-box;
 				overflow: hidden;
+				font-size: 16px;
+				color: #777;
 				text-overflow: ellipsis;
 				-webkit-line-clamp: 2;
 				-webkit-box-orient: vertical;
 			}
+		}
+		.functionItem:first-of-type {
+			margin-left: 0;
 		}
 	}
 }
