@@ -20,7 +20,9 @@ const router = createRouter({
         }
       ]
     },
-    { path: '/login', component: () => import('@/views/login') }
+    { path: '/login', component: () => import('@/views/login') },
+    // 歌单详情页
+    { path: '/playListAbout', component: () => import('@/views/playListAbout/playListAbout.vue') }
   ]
 
 })

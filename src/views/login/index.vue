@@ -19,7 +19,7 @@ function getLogin() {
 		url: "/captcha/verify",
 		data: {
 			phone: 18296638530,
-			captcha: 4752,
+			captcha: 4752, // captcha 表示手机接收到的验证码
 		},
 	}).then((res) => {
 		console.log(res.data);

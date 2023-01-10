@@ -77,7 +77,7 @@
 									</router-link>
 								</h3>
 								<div class="moduleBox">
-									<div class="functionItem" v-for="item in recommendPlayList" :key="item.creativeId" @click="gotoPlayList(item.creativeId)">
+									<div class="functionItem" v-for="item in recommendPlayList" :key="item.creativeId" @click="gotoPlayListAbout(item)">
 											<img
 												:src="item.uiElement.image.imageUrl"
 												alt=""
@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from "vue";
+import { ref, reactive, watch, onMounted, getCurrentInstance } from "vue";
 import { ElMessage } from "element-plus";
 import http from "@/util/require";
 import axios from "@/util/require";
@@ -106,6 +106,7 @@ let imageList = ref([]);
 let recommendPlayList = ref([]);
 // 是否显示加载动画
 let loading = ref(true);
+const instance = getCurrentInstance()
 // 获取首页数据
 const getHomeDate = function () {
 	loading.value = true;
@@ -116,7 +117,7 @@ const getHomeDate = function () {
 			if (res.data.code === 200) {
 				// console.log(res.data.data.blocks[1]);
 				// 首页轮播图
-				imageList.value = res.data.data.blocks[0].extInfo.banners;
+				// imageList.value = res.data.data.blocks[0].extInfo.banners;
 				// 推荐歌单
 				recommendPlayList.value = res.data.data.blocks[1].creatives
 				console.log(recommendPlayList.value[0].uiElement.image)
@@ -149,19 +150,15 @@ const getHomeDate = function () {
 const open = (title) => {
 	ElMessage(title ? title : "请求数据失败！！");
 };
-
-function gotoPlayList(id) {
-	console.log(id)
-	axios({
-		url: '/playlist/track/all',
-		params: {
-			id: id,
-			limit: 10,
-			offset: 1
-		}
-	}).then(res => {
-		console.log(res.data.songs)
-	})
+// 将传入的歌单信息保存在本地
+function gotoPlayListAbout(obj) {
+	console.log(obj)
+	localStorage.removeItem('playListAbout')
+	localStorage.setItem('playListAbout', JSON.stringify(obj))
+	if (instance !== null) {
+		const _this = instance.appContext.config.globalProperties;
+		_this.$router.push("/playListAbout");
+	}
 }
 // 生命周期
 create: {
