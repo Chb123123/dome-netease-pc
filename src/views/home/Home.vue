@@ -18,6 +18,7 @@ import { ElMessage } from 'element-plus'
 	let tableList = ref([
 		{ id: 0, text: '首页', icon: '', linkTo: '/home/homePage'},
 		{ id: 1, text: '发现', icon: '', linkTo: '/home/discover' },
+		{ id: 2, text: '我喜欢', icon: '', linkTo: '/home/userLike' },
 	])
 	let checkItemId = ref(0)
 	function open(title) {
@@ -38,10 +39,20 @@ import { ElMessage } from 'element-plus'
 	}
 	function checkItem(id) {
 		checkItemId.value = id
-		console.log(checkItemId)
+		sessionStorage.removeItem('checkItemId')
+		sessionStorage.setItem('checkItemId', id)
 	}
 	create: {
 		// getTableList()
+		// 获取选中的标签 ID
+		let checkItem = sessionStorage.getItem('checkItemId')
+		if(!checkItem) {
+			sessionStorage.setItem('checkItemId', 0)
+			checkItemId.value = 0
+		} else {
+			checkItemId.value = parseInt(sessionStorage.getItem('checkItemId'))
+		}
+		console.log(checkItemId)
 	}
 </script>
 

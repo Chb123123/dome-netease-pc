@@ -5,7 +5,7 @@ const router = createRouter({
 
   routes: [
     { path: '/', redirect: '/home', component: () => import('@/views/home/Home.vue') },
-    { 
+    {
       path: '/home', 
       redirect: '/home/homePage',
       component: () => import('@/views/home/Home.vue'), 
@@ -17,23 +17,29 @@ const router = createRouter({
         {
           path: 'discover',
           component: () => import('@/views/home/discover/index.vue')
+        },
+        // 用户喜欢的音乐列表
+        {
+          path: 'userLike', 
+          component: () => import('@/views/user/userLike.vue') 
         }
       ]
     },
     { path: '/login', component: () => import('@/views/login') },
     // 歌单详情页
-    { path: '/playListAbout', component: () => import('@/views/playListAbout/playListAbout.vue') }
+    { path: '/playListAbout', component: () => import('@/views/playListAbout/playListAbout.vue') },
+    
   ]
 
 })
-let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-console.log(userInfo)
+
 // 导航守卫
-// router.beforeEach((from, to) => {
-//   console.log(to.fullPath)
-//   if(to.fullPath !== '/login' && !userInfo) {
-//     return '/login'
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  if(to.path !== '/login' && !userInfo) {
+    return next('/login')
+  }
+  next()
+})
 
 export default router

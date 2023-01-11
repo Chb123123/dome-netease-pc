@@ -39,7 +39,7 @@
 								<div
 									v-for="(item, index) in playList"
 									:key="item.id"
-									class="musicItem"
+									:class="musicDetails.id === item.al.id ? 'musicItem checkMusic':'musicItem'"
 									@click="getMusicDetails(item)"
 								>
 									<!-- 歌曲列表序号 -->
@@ -57,10 +57,14 @@
 							</div>
 							<div class="musicAbout">
 								<img
-									:src="musicDetails !== {} ? musicDetails.picUrl : ''"
+									:src="musicDetails !== {} ? musicDetails.picUrl : require('@/assets/logo.png')"
 									alt=""
 								/>
 							</div>
+						</div>
+						<!-- 音乐列表模块结束，播放音乐模块开始 -->
+						<div class="playMusicMoudle">
+							
 						</div>
 					</div>
 				</div>
@@ -70,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, reactive } from "vue";
 import axios from "@/util/require";
 import { ElMessage } from "element-plus";
 
@@ -81,6 +85,10 @@ let loading = ref(true);
 let playListAbout = ref({});
 // 接收点击获取的音乐详情
 let musicDetails = ref({});
+// 是否加载完成图片
+let isWhetherLoad = ref(true)
+// 播放当前音乐地址的 URL
+let newPlayMusicUrl = ref('')
 
 function getPlayList() {
 	loading.value = true;
@@ -113,9 +121,35 @@ function open(title) {
 }
 // 点击音乐
 function getMusicDetails(obj) {
-	console.log(obj.al);
-	musicDetails.value = obj.al;
+	if(isWhetherLoad) {
+		console.log(obj.al);
+		isWhetherLoad.value = false
+		musicDetails.value = obj.al;
+		// 获取音乐的 播放地址
+		axios({
+			url: '/song/url',
+			params: {
+				id: obj.al.id,
+			}
+		}).then(res => {
+			console.log(res.data)
+			if(res.data.code === 200) {
+				if(res.data.data[0].url) {
+					console.log(res.data.data[0].url)
+					newPlayMusicUrl.value = res.data.data[0].url
+				} else {
+					open('当前歌曲暂未有有效URL,请切换其他歌曲')
+				}
+			} else {
+				open()
+			}
+			isWhetherLoad.value = true
+		})
+	} else {
+		open('点击过快，请稍后重试!')
+	}
 }
+
 create: {
 	playListAbout = JSON.parse(localStorage.getItem("playListAbout"));
 	console.log(playListAbout.uiElement.image.imageUrl);
@@ -147,6 +181,7 @@ create: {
 		display: flex;
 		width: 100%;
 		height: 85%;
+		padding-bottom: 20px;
 		overflow: hidden;
 		// 音乐详情模块
 		.musicAbout {
@@ -170,6 +205,15 @@ create: {
 				align-items: center;
 				color: white;
 				font-size: 16px;
+				transition: all 0.3s;
+				&:hover {
+					color: #0ff;
+				}
+			}
+			// 选中的音乐
+			.checkMusic {
+				// background-color: #ccc;
+				color: #0ff;
 			}
 			.indexStyle {
 				width: 10%;
@@ -209,6 +253,14 @@ create: {
 			border-radius: 30px;
 			background: transparent;
 		}
+	}
+	// 音乐播放模块
+	.playMusicMoudle {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		height: 15%;
+		border: 1px solid #ccc;
 	}
 }
 </style>

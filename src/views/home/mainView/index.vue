@@ -86,6 +86,26 @@
 									</div>
 								</div>
 							</div>
+							<!-- 排行榜 -->
+							<!-- 推荐歌单 -->
+							<div class="functionModule">
+								<h3 class="titleStyle">
+									排行榜
+									<router-link class="moreBtn" to="">
+										更多
+										<el-icon><ArrowRight /></el-icon>
+									</router-link>
+								</h3>
+								<div class="moduleBox">
+									<div class="functionItem" v-for="item in recommendPlayList" :key="item.creativeId" @click="gotoPlayListAbout(item)">
+											<img
+												:src="item.uiElement.image.imageUrl"
+												alt=""
+											/>
+										<div class="lineHeightOverFrom">{{ item.uiElement.mainTitle.title }}</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</template>
 				</el-skeleton>
@@ -107,6 +127,8 @@ let recommendPlayList = ref([]);
 // 是否显示加载动画
 let loading = ref(true);
 const instance = getCurrentInstance()
+// 排行榜数据
+let musicRankingList = ref([])
 // 获取首页数据
 const getHomeDate = function () {
 	loading.value = true;
@@ -115,12 +137,14 @@ const getHomeDate = function () {
 	})
 		.then((res) => {
 			if (res.data.code === 200) {
-				// console.log(res.data.data.blocks[1]);
+				// console.log(res.data.data.blocks);
 				// 首页轮播图
-				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+				imageList.value = res.data.data.blocks[0].extInfo.banners;
 				// 推荐歌单
 				recommendPlayList.value = res.data.data.blocks[1].creatives
-				console.log(recommendPlayList.value[0].uiElement.image)
+				// 排行榜
+				musicRankingList.value = res.data.data.blocks[3].creatives
+				console.log(musicRankingList)
 			} else {
 				open("获取数据失败！！");
 			}
@@ -132,19 +156,19 @@ const getHomeDate = function () {
 		});
 };
 // 获取每日歌单列表
-// function getPlayLiat() {
-// 	http({
-// 		url: "/personalized",
-// 	})
-// 		.then((res) => {
-// 			if (res.data.code === 200) {
-// 				everyPlayList.value = res.data.result;
-// 				console.log(everyPlayList);
-// 			} else {
-// 				open("获取推荐歌单失败!!");
-// 			}
-// 		})
-// }
+function getPlayLiat() {
+	http({
+		url: "/program/recommend",
+	})
+	.then((res) => {
+		if (res.data.code === 200) {
+			// everyPlayList.value = res.data.result;
+			console.log(res);
+		} else {
+			open("获取推荐歌单失败!!");
+		}
+	})
+}
 
 // 消息弹窗
 const open = (title) => {
