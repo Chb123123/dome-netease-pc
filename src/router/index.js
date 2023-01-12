@@ -22,12 +22,28 @@ const router = createRouter({
         {
           path: 'userLike', 
           component: () => import('@/views/user/userLike.vue') 
+        },
+        {
+          path: 'rankingList',
+          component: () => import('@/views/home/rankingList/rankingList.vue')
         }
       ]
     },
-    { path: '/login', component: () => import('@/views/login') },
+    // 登入页
+    { 
+      path: '/login', 
+      component: () => import('@/views/login') 
+    },
     // 歌单详情页
-    { path: '/playListAbout', component: () => import('@/views/playListAbout/playListAbout.vue') },
+    { 
+      path: '/playListAbout', 
+      component: () => import('@/views/playListAbout/playListAbout.vue') 
+    },
+    // 榜单详情页
+    {
+      path: '/topListAbout',
+      component: () => import('@/views/topList/topListAbout.vue')
+    }
     
   ]
 

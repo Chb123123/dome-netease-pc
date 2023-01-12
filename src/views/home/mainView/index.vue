@@ -70,7 +70,7 @@
 							<!-- 推荐歌单 -->
 							<div class="functionModule">
 								<h3 class="titleStyle">
-									推荐歌单
+									<!-- 推荐歌单 -->
 									<router-link class="moreBtn" to="">
 										更多
 										<el-icon><ArrowRight /></el-icon>
@@ -90,7 +90,7 @@
 							<!-- 推荐歌单 -->
 							<div class="functionModule">
 								<h3 class="titleStyle">
-									排行榜
+									<!-- 排行榜 -->
 									<router-link class="moreBtn" to="">
 										更多
 										<el-icon><ArrowRight /></el-icon>
@@ -118,7 +118,6 @@
 import { ref, reactive, watch, onMounted, getCurrentInstance } from "vue";
 import { ElMessage } from "element-plus";
 import http from "@/util/require";
-import axios from "@/util/require";
 
 // 首页轮播图列表
 let imageList = ref([]);
@@ -139,9 +138,9 @@ const getHomeDate = function () {
 			if (res.data.code === 200) {
 				// console.log(res.data.data.blocks);
 				// 首页轮播图
-				imageList.value = res.data.data.blocks[0].extInfo.banners;
+				// imageList.value = res.data.data.blocks[0].extInfo.banners;
 				// 推荐歌单
-				recommendPlayList.value = res.data.data.blocks[1].creatives
+				// recommendPlayList.value = res.data.data.blocks[1].creatives
 				// 排行榜
 				musicRankingList.value = res.data.data.blocks[3].creatives
 				console.log(musicRankingList)
@@ -150,10 +149,6 @@ const getHomeDate = function () {
 			}
 			loading.value = false;
 		})
-		.catch((err) => {
-			open(err);
-			loading.value = false;
-		});
 };
 // 获取每日歌单列表
 function getPlayLiat() {
@@ -174,6 +169,7 @@ function getPlayLiat() {
 const open = (title) => {
 	ElMessage(title ? title : "请求数据失败！！");
 };
+
 // 将传入的歌单信息保存在本地
 function gotoPlayListAbout(obj) {
 	console.log(obj)

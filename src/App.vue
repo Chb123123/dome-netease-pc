@@ -23,5 +23,16 @@ export default {
   * {
     padding: 0;
     margin: 0;
+    /* 隐藏滚动条 */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  .pageMain {
+    width: 100%;
+    padding: 20px;
+    height: calc(100vh - 20px);
   }
 </style>

@@ -19,6 +19,7 @@ import { ElMessage } from 'element-plus'
 		{ id: 0, text: '首页', icon: '', linkTo: '/home/homePage'},
 		{ id: 1, text: '发现', icon: '', linkTo: '/home/discover' },
 		{ id: 2, text: '我喜欢', icon: '', linkTo: '/home/userLike' },
+		{ id: 3, text: '排行榜', icon: '', linkTo: '/home/rankingList' },
 	])
 	let checkItemId = ref(0)
 	function open(title) {

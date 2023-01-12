@@ -127,6 +127,7 @@ function visitorLogin () {
 			} else {
 				localStorage.setItem('userInfo', JSON.stringify(userInfo))
 			}
+			// 跳转到首页
 			instance.appContext.config.globalProperties.$router.push('/')
 		}
 	})
