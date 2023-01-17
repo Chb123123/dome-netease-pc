@@ -3,7 +3,7 @@
 		<div class="pageMain">
 			<el-space direction="vertical" alignment="flex-start">
 				<div></div>
-				<el-skeleton :loading="loading" animated :throttle="1000">
+				<el-skeleton :loading="loading" animated>
 					<template #template>
 						<el-skeleton-item
 							variant="image"
@@ -70,7 +70,7 @@
 							<!-- 推荐歌单 -->
 							<div class="functionModule">
 								<h3 class="titleStyle">
-									<!-- 推荐歌单 -->
+									推荐歌单
 									<router-link class="moreBtn" to="">
 										更多
 										<el-icon><ArrowRight /></el-icon>
@@ -90,7 +90,7 @@
 							<!-- 推荐歌单 -->
 							<div class="functionModule">
 								<h3 class="titleStyle">
-									<!-- 排行榜 -->
+									排行榜
 									<router-link class="moreBtn" to="">
 										更多
 										<el-icon><ArrowRight /></el-icon>
@@ -138,9 +138,9 @@ const getHomeDate = function () {
 			if (res.data.code === 200) {
 				// console.log(res.data.data.blocks);
 				// 首页轮播图
-				// imageList.value = res.data.data.blocks[0].extInfo.banners;
+				imageList.value = res.data.data.blocks[0].extInfo.banners;
 				// 推荐歌单
-				// recommendPlayList.value = res.data.data.blocks[1].creatives
+				recommendPlayList.value = res.data.data.blocks[1].creatives
 				// 排行榜
 				musicRankingList.value = res.data.data.blocks[3].creatives
 				console.log(musicRankingList)
@@ -206,7 +206,7 @@ create: {
 	width: 100%;
 }
 .pageMain {
-	height: calc(100vh - 20px);
+	height: calc(100vh - 100px);
 	width: 100%;
 	// border: 1px solid #ccc;
 	padding: 20px;

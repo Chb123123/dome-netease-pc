@@ -57,14 +57,24 @@
 							</div>
 							<div class="musicAbout">
 								<img
-									:src="musicDetails !== {} ? musicDetails.picUrl : require('@/assets/logo.png')"
+									:src="playListAbout.uiElement.image.imageUrl"
 									alt=""
+									style="border-radius: 20px;"
 								/>
+								<div style="margin-top: 20px;">{{ playListAbout.uiElement.mainTitle.title }}</div>
 							</div>
 						</div>
 						<!-- 音乐列表模块结束，播放音乐模块开始 -->
 						<div class="playMusicMoudle">
-							
+							<div class="leftAbout">
+								<img :src="musicAbout ? musicAbout.al.picUrl: ''" alt="">
+								<div class="musicAuthorAbout">
+									<span style="margin-bottom: 20px;">{{ musicAbout ? musicAbout.al.name:'暂无歌曲播放' }}</span>
+									<span v-if="musicAbout">{{ musicAbout.ar[0].name }}</span>
+								</div>
+							</div>
+							<!-- 中间播放模块 -->
+							<div class="playMoudel"></div>
 						</div>
 					</div>
 				</div>
@@ -89,6 +99,8 @@ let musicDetails = ref({});
 let isWhetherLoad = ref(true)
 // 播放当前音乐地址的 URL
 let newPlayMusicUrl = ref('')
+// 点击的音乐详情
+let musicAbout = ref(null)
 
 function getPlayList() {
 	loading.value = true;
@@ -122,9 +134,10 @@ function open(title) {
 // 点击音乐
 function getMusicDetails(obj) {
 	if(isWhetherLoad) {
-		console.log(obj.al);
 		isWhetherLoad.value = false
 		musicDetails.value = obj.al;
+		console.log(obj)
+		musicAbout.value = obj
 		// 获取音乐的 播放地址
 		axios({
 			url: '/song/url',
@@ -132,10 +145,10 @@ function getMusicDetails(obj) {
 				id: obj.al.id,
 			}
 		}).then(res => {
-			console.log(res.data)
+			// console.log(res.data)
 			if(res.data.code === 200) {
 				if(res.data.data[0].url) {
-					console.log(res.data.data[0].url)
+					// console.log(res.data.data[0].url)
 					newPlayMusicUrl.value = res.data.data[0].url
 				} else {
 					open('当前歌曲暂未有有效URL,请切换其他歌曲')
@@ -152,7 +165,7 @@ function getMusicDetails(obj) {
 
 create: {
 	playListAbout = JSON.parse(localStorage.getItem("playListAbout"));
-	console.log(playListAbout.uiElement.image.imageUrl);
+	console.log(playListAbout);
 	getPlayList();
 }
 </script>
@@ -187,10 +200,17 @@ create: {
 		.musicAbout {
 			flex: 0.4;
 			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			// flex-direction: column;
+			color: white;
+			font-size: 24px;
 			justify-content: center;
 			> img {
 				width: 200px;
 				height: 200px;
+				margin-bottom: 30px;
 			}
 		}
 		// 音乐列表模块
@@ -260,7 +280,39 @@ create: {
 		align-items: center;
 		width: 100%;
 		height: 15%;
-		border: 1px solid #ccc;
+		border-top: 1px solid #ccc;
+		.leftAbout {
+			padding: 20px;
+			display: flex;
+			align-items: center;
+			width: 20%;
+			height: 100%;
+			// border: 1px solid #ccc;
+			> img {
+				width: 100px;
+				height: 100%;
+				border-radius: 10px;
+			}
+			.musicAuthorAbout{
+				display: flex;
+				flex: 1;
+				height: 100%;
+				padding: 10px 0 10px 20px;
+				flex-direction: column;
+				justify-content: space-between;
+				// background-color: red;
+				color: white;
+			}
+		}
+		// 播放进度条
+		.playMoudel {
+			width: 60%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border: 1px solid #ccc;
+		}
 	}
 }
 </style>
