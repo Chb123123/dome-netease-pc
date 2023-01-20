@@ -61,7 +61,7 @@
 									<img
 										:src="item.pic"
 										alt=""
-										style="width: 100%; height: 100%"
+										style="width: 100%; height: 100%; border-radius: 10px;"
 									/>
 								</el-carousel-item>
 							</el-carousel>
@@ -206,9 +206,10 @@ create: {
 	width: 100%;
 }
 .pageMain {
-	height: calc(100vh - 100px);
+	height: 100vh;
 	width: 100%;
 	// border: 1px solid #ccc;
+	overflow: auto;
 	padding: 20px;
 	box-sizing: border-box;
 }

@@ -66,7 +66,7 @@ cerate: {
     height: 250px;
     width: 19%;
     min-width: 200px;
-    border: 1px solid #ccc;
+    // border: 1px solid #ccc;
     margin-bottom: 20px;
     > img {
       width: 100%;
