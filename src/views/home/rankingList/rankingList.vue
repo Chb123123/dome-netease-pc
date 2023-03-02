@@ -10,11 +10,12 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance } from 'vue'
+import { ref } from 'vue'
 import axios from '@/util/require'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 
-const instance = getCurrentInstance()
+const $router = useRouter()
 // 榜单列表
 let topList = ref([])
 // 初始化页面数据
@@ -37,13 +38,12 @@ function infoDate() {
 
 // 点击榜单前往表单详情
 function getTopListAbout(obj) {
-  console.log(obj)
   // 将榜单的详情存储在本地
   if(sessionStorage.getItem('topListInfo')) {
     sessionStorage.removeItem('topListInfo')
   }
   sessionStorage.setItem('topListInfo', JSON.stringify(obj))
-  instance.appContext.config.globalProperties.$router.push('/topListAbout')
+  $router.push('/topListAbout')
 }
 cerate: {
   infoDate()

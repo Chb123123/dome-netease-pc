@@ -21,8 +21,9 @@
 
 <script setup>
 import { ElMessage } from "element-plus";
-import { ref, getCurrentInstance } from "vue";
+import { ref } from "vue";
 import axios from "@/util/require";
+import { useRouter } from 'vue-router'
 // 用户手机号
 let userPhone = ref("");
 // 通过手机号获取的验证码
@@ -30,7 +31,8 @@ let captcha = ref('')
 // 发送验证码按钮是否可用
 let btnIsUsable = ref(false)
 let btnValue = ref('获取验证码')
-const instance = getCurrentInstance();
+
+const $router = useRouter()
 function getLogin() {
 	if(captcha !== '' && userPhone !== '') {
 		axios({
@@ -43,10 +45,7 @@ function getLogin() {
 		}).then((res) => {
 			console.log(res.data);
 			if (res.data.code === 200) {
-				if (instance !== null) {
-					const _this = instance.appContext.config.globalProperties;
-					_this.$router.push('/');
-				}
+				$router.push('/')
 			} else {
 				open2('验证失败,请重新输入')
 			}
@@ -128,7 +127,7 @@ function visitorLogin () {
 				localStorage.setItem('userInfo', JSON.stringify(userInfo))
 			}
 			// 跳转到首页
-			instance.appContext.config.globalProperties.$router.push('/')
+			$router.push('/')
 		}
 	})
 }
@@ -141,7 +140,6 @@ function monitorLogin () {
 	})
 }
 created: {
-	// console.log(instance.appContext.config.globalProperties.$router.push('/'))
 	getUserInfo();
 	monitorLogin()
 }

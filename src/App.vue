@@ -33,4 +33,10 @@
     padding: 20px;
     height: calc(100vh - 20px);
   }
+  /* 设置全局文字不换行 */
+  .textNotWarp {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 </style>

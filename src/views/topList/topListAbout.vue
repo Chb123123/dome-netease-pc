@@ -16,9 +16,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance } from 'vue'
+import { ref, reactive } from 'vue'
 import axios from '@/util/require'
 import { ElMessage } from 'element-plus';
+import { useRouter } from 'vue-router'
 
 // 榜单详情
 let topListObj = reactive({})
@@ -30,8 +31,7 @@ let checkMusicId = ref()
 let newMusicUrl = ref()
 
 let audio = document.querySelector('.audio')
-const instance = getCurrentInstance()
-const _this = instance.appContext.config.globalProperties
+const $router = useRouter()  // 实现路由跳转
 
 // 初始化榜单数据
 function infoTopListDate() {
@@ -45,7 +45,6 @@ function infoTopListDate() {
     if(res.data.code === 200) {
       // 榜单排行数据
       topListDate.value = res.data.playlist.tracks
-      console.log(topListDate)
     } else {
       ElMessage({
         type: 'error',
@@ -56,7 +55,6 @@ function infoTopListDate() {
 }
 // 点击播放音乐
 function playMusic(obj) {
-  console.log(audio.play())
   audio.play()
   checkMusicId.value = obj.id
   axios({

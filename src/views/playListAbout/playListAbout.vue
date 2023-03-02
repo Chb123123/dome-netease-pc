@@ -101,13 +101,14 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance, reactive } from "vue";
+import { ref, reactive } from "vue";
 import axios from "@/util/require";
 import { ElMessage } from "element-plus";
+import { useRouter } from 'vue-router'
 
 let playList = ref([]);
+const $router = useRouter()
 // 获取全局变量
-const instance = getCurrentInstance();
 let loading = ref(true);
 let playListAbout = ref({});
 // 接收点击获取的音乐详情
@@ -145,10 +146,7 @@ function getPlayList() {
 }
 // 回退视图按钮
 function backViewBtn() {
-	if (instance !== null) {
-		const _this = instance.appContext.config.globalProperties;
-		_this.$router.back();
-	}
+	$router.back();
 }
 // 提示框函数
 function open(title) {
