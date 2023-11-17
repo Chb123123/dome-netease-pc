@@ -327,7 +327,7 @@ create: {
 	height: calc(100vh - 20px);
 	background-size: auto;
 	-webkit-filter: blur(150px);
-	filter: blur(150px);
+	filter: blur(150px); // 模糊
 }
 .mainView {
 	position: absolute;
